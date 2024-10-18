@@ -1,0 +1,35 @@
+{# templates/expense/list.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Expense List{% endblock %}
+
+{% block body %}
+    <h1>List of Expenses</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for expense in expenses %}
+                <tr>
+                    <td>{{ expense.id }}</td>
+                    <td>{{ expense.category }}</td>
+                    <td>{{ expense.amount }}</td>
+                    <td>{{ expense.date|date('Y-m-d') }}</td>
+                    <td>{{ expense.description }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">No expenses found</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

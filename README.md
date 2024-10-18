@@ -4,11 +4,13 @@ A small project for now.
 
 ## TODO
 
-- [ ] Routing
-- [ ] Database
-- [ ] Controller and Entity
+- [x] Routing
+- [x] Database
+- [x] Controller and Entity
 - [ ] API
 - [ ] Unit Testing
 - [ ] CI / CD with Github actions
+- [ ] Design
+- [ ] Export to CSV
 
 Alexandre TO
