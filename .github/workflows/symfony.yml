@@ -52,16 +52,10 @@ jobs:
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
-      - name: Wait for MySQL to be ready
+      - name: Set up :YSQL
         run: |
-          for i in {1..60}; do
-            if mysqladmin ping -h localhost -u root --password=root; then
-              echo "MySQL is up!"
-              break
-            fi
-            echo "Waiting for MySQL..."
-            sleep 1
-          done
+          sudo /etc/init.d/mysql start
+          mysql -e 'CREATE DATABASE ${{ secrets.DB_NAME }};' -u${{ secrets.DB_USERNAME }} -p${{ secrets.DB_PASSWORD }}
 
       - name: Execute database migrations
         run: php bin/console doctrine:migrations:migrate --no-interaction --env=test
