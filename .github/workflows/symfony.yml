@@ -53,12 +53,12 @@ jobs:
       - name: Set up MYSQL
         run: |
           sudo /etc/init.d/mysql start
-          mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -uroot -proot
+          mysql -e 'CREATE DATABASE ${{ env.MYSQL_DATABASE }};' -uroot -proot
 
       - name: Execute database migrations
         run: php bin/console doctrine:migrations:migrate --no-interaction --env=test
 
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         env:
-          DATABASE_URL: mysql://root:root@127.0.0.1:3306/${{ env.DB_DATABASE }} # Use secrets in DATABASE_URL
+          DATABASE_URL: mysql://root:root@127.0.0.1:3306/test_db # Use secrets in DATABASE_URL
         run: vendor/bin/phpunit
