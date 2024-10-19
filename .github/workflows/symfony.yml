@@ -18,13 +18,29 @@ jobs:
   symfony-tests:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:latest # Use the latest version of MySQL or MariaDB
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: root # Set a root password (this can be a default value)
+          MYSQL_DATABASE: ${{ secrets.DB_NAME }} # Use secret for test database name
+          MYSQL_USER: ${{ secrets.DB_USERNAME }} # Use secret for username
+          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }} # Use secret for password
+        options: >-
+          --health-cmd "mysqladmin ping -h localhost"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
+
     steps:
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.3" #Update this line if upgrading php version
-          extensions: mbstring, xml, curl, bcmath # Include any PHP extensions your project requires
+          php-version: "8.3"
+          extensions: mbstring, xml, curl, bcmath, pdo_mysql # Include PDO MySQL extension
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
       - name: Copy .env.test.local
         run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
@@ -41,12 +57,19 @@ jobs:
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
-      - name: Create Database
+      - name: Wait for MySQL to be ready
         run: |
-          mkdir -p data
-          touch data/database.sqlite
+          for i in {1..30}; do
+            if mysqladmin ping -h 127.0.0.1 -u root --password=root; then
+              break
+            fi
+            sleep 1
+          done
+
+      - name: Execute database migrations
+        run: php bin/console doctrine:migrations:migrate --no-interaction --env=test
 
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         env:
-          DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
-        run: vendor/bin/phpunit # Include coverage report generation
+          DATABASE_URL: mysql://${{ secrets.DB_USERNAME }}:${{ secrets.DB_PASSWORD }}@127.0.0.1:3306/${{ secrets.DB_NAME }} # Use secrets in DATABASE_URL
+        run: vendor/bin/phpunit
