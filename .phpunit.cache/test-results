@@ -1,1 +1,0 @@
-{"version":1,"defects":{"App\\Tests\\Form\\ExpenseTypeTest::testSubmitValidData":7,"App\\Tests\\Form\\ExpenseTypeTest::testValidFormData":5},"times":{"App\\Tests\\Form\\ExpenseTypeTest::testSubmitValidData":0.038,"App\\Tests\\Form\\ExpenseTypeTest::testInvalidData":0.005,"App\\Tests\\Form\\ExpenseTypeTest::testValidFormData":0.104}}
