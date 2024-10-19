@@ -20,14 +20,14 @@ jobs:
           - 3306:3306
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: ${{ secrets.DB_NAME }}
-          MYSQL_USER: ${{ secrets.DB_USERNAME }}
-          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.DB_NAME }} # Use secret for test database name
+          MYSQL_USER: ${{ secrets.DB_USERNAME }} # Use secret for username
+          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }} # Use secret for password
         options: >-
-          --health-cmd="mysqladmin ping -h 127.0.0.1 --silent"
+          --health-cmd="mysqladmin ping -h localhost --silent"
           --health-interval=5s
-          --health-timeout=3s
-          --health-retries=5
+          --health-timeout=5s
+          --health-retries=10
 
     steps:
       - uses: shivammathur/setup-php@v2
@@ -55,7 +55,7 @@ jobs:
       - name: Wait for MySQL to be ready
         run: |
           for i in {1..60}; do
-            if mysqladmin ping -h mysql -u root --password=root; then
+            if mysqladmin ping -h localhost -u root --password=root; then
               echo "MySQL is up!"
               break
             fi
@@ -68,5 +68,5 @@ jobs:
 
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         env:
-          DATABASE_URL: mysql://${{ secrets.DB_USERNAME }}:${{ secrets.DB_PASSWORD }}@mysql:3306/${{ secrets.DB_NAME }}
+          DATABASE_URL: mysql://${{ secrets.DB_USERNAME }}:${{ secrets.DB_PASSWORD }}@mysql:3306/${{ secrets.DB_NAME }} # Use secrets in DATABASE_URL
         run: vendor/bin/phpunit
