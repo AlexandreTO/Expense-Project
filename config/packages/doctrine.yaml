@@ -31,7 +31,6 @@ when@test:
   doctrine:
     dbal:
       # "TEST_TOKEN" is typically set by ParaTest
-      dbname_suffix: "test_db"
 
 when@prod:
   doctrine:
