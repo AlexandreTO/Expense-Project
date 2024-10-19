@@ -24,7 +24,7 @@ jobs:
           php-version: "8.3" #Update this line if upgrading php version
           extensions: mbstring, xml, curl, bcmath # Include any PHP extensions your project requires
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Copy .env.test.local
         run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
