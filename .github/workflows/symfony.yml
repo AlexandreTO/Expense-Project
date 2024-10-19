@@ -30,9 +30,9 @@ jobs:
           MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }} # Use secret for password
         options: >-
           --health-cmd "mysqladmin ping -h localhost"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 3
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
     steps:
       - uses: shivammathur/setup-php@v2
@@ -71,5 +71,5 @@ jobs:
 
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         env:
-          DATABASE_URL: mysql://${{ secrets.DB_USERNAME }}:${{ secrets.DB_PASSWORD }}@127.0.0.1:3306/${{ secrets.DB_NAME }} # Use secrets in DATABASE_URL
+          DATABASE_URL: mysql://${{ secrets.DB_USERNAME }}:${{ secrets.DB_PASSWORD }}@mysql:3306/${{ secrets.DB_NAME }} # Use secrets in DATABASE_URL
         run: vendor/bin/phpunit
