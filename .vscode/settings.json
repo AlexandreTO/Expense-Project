@@ -14,5 +14,6 @@
             "username": "alexandre",
             "askForPassword": true
         }
-    ]
+    ],
+    "php.version": "8.3"
 }
