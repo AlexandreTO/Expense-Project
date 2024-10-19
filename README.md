@@ -9,7 +9,7 @@ A small project for now.
 - [x] Controller and Entity
 - [ ] API
 - [x] Unit Testing
-- [ ] CI / CD with Github actions
+- [x] CI / CD with Github actions
 - [ ] Design
 - [ ] Export to CSV
 

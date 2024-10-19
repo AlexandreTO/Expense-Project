@@ -1,35 +1,50 @@
 {# templates/expense/list.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Expense List{% endblock %}
+{% block title %}Expense List
+{% endblock %}
 
 {% block body %}
-    <h1>List of Expenses</h1>
+	<div class="container">
+		<h1>List of Expenses</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Category</th>
-                <th>Amount</th>
-                <th>Date</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for expense in expenses %}
-                <tr>
-                    <td>{{ expense.id }}</td>
-                    <td>{{ expense.category }}</td>
-                    <td>{{ expense.amount }}</td>
-                    <td>{{ expense.date|date('Y-m-d') }}</td>
-                    <td>{{ expense.description }}</td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="5">No expenses found</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+		<table id="table" class="table">
+			<thead>
+				<tr>
+					<th>
+						<a href="#" class="sortable" data-sort="category">Category</a>
+					</th>
+					<th>
+						<a href="#" class="sortable" data-sort="amount">Amount</a>
+					</th>
+					<th>
+						<a href="#" class="sortable" data-sort="date">Date</a>
+					</th>
+					<th>
+						<a href="#" class="sortable" data-sort="description">Description</a>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for expense in expenses %}
+					<tr>
+						<td data-column="category">{{ expense.category }}</td>
+						<td data-column="amount">{{ expense.amount }}</td>
+						<td data-column="date">{{ expense.date|date('Y-m-d') }}</td>
+						<td data-column="description">{{ expense.description }}</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="4">No expenses found</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+			<button class="btn btn-primary">Export to CSV</button>
+		</table>
+	</div>
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ encore_entry_script_tags('app') }}
 {% endblock %}

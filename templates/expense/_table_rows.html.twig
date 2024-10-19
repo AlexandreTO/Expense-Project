@@ -1,0 +1,12 @@
+{% for expense in expenses %}
+    <tr>
+        <td>{{ expense.category }}</td>
+        <td>{{ expense.amount }}</td>
+        <td>{{ expense.date|date('Y-m-d') }}</td>
+        <td>{{ expense.description }}</td>
+    </tr>
+{% else %}
+    <tr>
+        <td colspan="4">No expenses found</td>
+    </tr>
+{% endfor %}

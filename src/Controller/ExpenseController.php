@@ -33,12 +33,25 @@ class ExpenseController extends AbstractController
     }
 
     #[Route('/expense/list', name: 'expense_list')]
-    public function listExpenses(EntityManagerInterface $em): Response
+    public function listExpenses(Request $request, EntityManagerInterface $em): Response
     {
-        $expenses = $em->getRepository(Expense::class)->findAll();
+        $sortField = $request->query->get('sort', 'category');
+        $sortDirection = $request->query->get('direction', 'asc');
+
+        $expenses = $em->getRepository(Expense::class)->findBy([], [$sortField => $sortDirection]);
+
+        if ($request->isXmlHttpRequest()) {
+            // Return only the table rows for AJAX requests
+            return $this->render('expense/_table_rows.html.twig', [
+                'expenses' => $expenses,
+            ]);
+        }
 
         return $this->render('expense/list.html.twig', [
             'expenses' => $expenses,
+            'sortField' => $sortField,
+            'sortDirection' => $sortDirection,
         ]);
     }
+
 }

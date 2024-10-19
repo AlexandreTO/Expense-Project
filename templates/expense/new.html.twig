@@ -1,17 +1,20 @@
 {# templates/expense/new.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}New Expense{% endblock %}
+{% block title %}New Expense
+{% endblock %}
 
 {% block body %}
-    <h1>Create a New Expense</h1>
+	<div class="container">
+		<h1>Create a New Expense</h1>
 
-    {{ form_start(form) }}
-        {{ form_row(form.category) }}
-        {{ form_row(form.amount) }}
-        {{ form_row(form.date) }}
-        {{ form_row(form.description) }}
-        
-        <button class="btn btn-primary">Submit</button>
-    {{ form_end(form) }}
+		{{ form_start(form) }}
+		{{ form_row(form.category) }}
+		{{ form_row(form.amount) }}
+		{{ form_row(form.date) }}
+		{{ form_row(form.description) }}
+
+		<button class="btn btn-primary">Submit</button>
+		{{ form_end(form) }}
+	</div>
 {% endblock %}
