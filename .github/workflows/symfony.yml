@@ -20,9 +20,9 @@ jobs:
           - 3306:3306
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: ${{ secrets.DB_NAME }} # Use secret for test database name
-          MYSQL_USER: ${{ secrets.DB_USERNAME }} # Use secret for username
-          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }} # Use secret for password
+          MYSQL_DATABASE: test_db # Use secret for test database name
+          MYSQL_USER: root # Use secret for username
+          MYSQL_PASSWORD: root # Use secret for password
         options: >-
           --health-cmd="mysqladmin ping -h localhost --silent"
           --health-interval=5s
@@ -55,12 +55,12 @@ jobs:
       - name: Set up :YSQL
         run: |
           sudo /etc/init.d/mysql start
-          mysql -e 'CREATE DATABASE ${{ secrets.DB_NAME }};' -u${{ secrets.DB_USERNAME }} -p${{ secrets.DB_PASSWORD }}
+          mysql -e 'CREATE DATABASE test_db;' -uroot -proot
 
       - name: Execute database migrations
         run: php bin/console doctrine:migrations:migrate --no-interaction --env=test
 
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         env:
-          DATABASE_URL: mysql://${{ secrets.DB_USERNAME }}:${{ secrets.DB_PASSWORD }}@mysql:3306/${{ secrets.DB_NAME }} # Use secrets in DATABASE_URL
+          DATABASE_URL: mysql://root:root@mysql:3306/test_db # Use secrets in DATABASE_URL
         run: vendor/bin/phpunit
