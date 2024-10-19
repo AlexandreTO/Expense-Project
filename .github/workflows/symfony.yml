@@ -1,8 +1,3 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 name: Symfony Tests
 
 on:
@@ -20,25 +15,25 @@ jobs:
 
     services:
       mysql:
-        image: mysql:latest # Use the latest version of MySQL or MariaDB
+        image: mysql:latest
         ports:
           - 3306:3306
         env:
-          MYSQL_ROOT_PASSWORD: root # Set a root password (this can be a default value)
-          MYSQL_DATABASE: ${{ secrets.DB_NAME }} # Use secret for test database name
-          MYSQL_USER: ${{ secrets.DB_USERNAME }} # Use secret for username
-          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }} # Use secret for password
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: ${{ secrets.DB_NAME }}
+          MYSQL_USER: ${{ secrets.DB_USERNAME }}
+          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
         options: >-
-          --health-cmd "mysqladmin ping -h localhost"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
+          --health-cmd="mysqladmin ping -h 127.0.0.1 --silent"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=5
 
     steps:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: "8.3"
-          extensions: mbstring, xml, curl, bcmath, pdo_mysql # Include PDO MySQL extension
+          extensions: mbstring, xml, curl, bcmath, pdo_mysql
 
       - uses: actions/checkout@v3
 
@@ -59,10 +54,12 @@ jobs:
 
       - name: Wait for MySQL to be ready
         run: |
-          for i in {1..30}; do
-            if mysqladmin ping -h 127.0.0.1 -u root --password=root; then
+          for i in {1..60}; do
+            if mysqladmin ping -h mysql -u root --password=root; then
+              echo "MySQL is up!"
               break
             fi
+            echo "Waiting for MySQL..."
             sleep 1
           done
 
@@ -71,5 +68,5 @@ jobs:
 
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         env:
-          DATABASE_URL: mysql://${{ secrets.DB_USERNAME }}:${{ secrets.DB_PASSWORD }}@mysql:3306/${{ secrets.DB_NAME }} # Use secrets in DATABASE_URL
+          DATABASE_URL: mysql://${{ secrets.DB_USERNAME }}:${{ secrets.DB_PASSWORD }}@mysql:3306/${{ secrets.DB_NAME }}
         run: vendor/bin/phpunit
