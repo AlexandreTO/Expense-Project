@@ -19,7 +19,7 @@ jobs:
         ports:
           - 3306:3306
         env:
-          MYSQL_ROOT_PASSWORD: test_password
+          MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: test_db # Use secret for test database name
         options: >-
           --health-cmd="mysqladmin ping -h 127.0.0.1 --silent"
@@ -53,12 +53,12 @@ jobs:
       - name: Set up MYSQL
         run: |
           sudo /etc/init.d/mysql start
-          mysql -e 'CREATE DATABASE test_db;' -uroot -ptest_password
+          mysql -e 'CREATE DATABASE test_db;' -uroot -proot
 
       - name: Execute database migrations
         run: php bin/console doctrine:migrations:migrate --no-interaction --env=test
 
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         env:
-          DATABASE_URL: mysql://root:test_password@127.0.0.1:3306/test_db # Use secrets in DATABASE_URL
+          DATABASE_URL: mysql://root:root@127.0.0.1:3306/test_db # Use secrets in DATABASE_URL
         run: vendor/bin/phpunit
