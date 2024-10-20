@@ -33,7 +33,7 @@ vendor/bin/phpunit #can add the folder or files to specify which tests to run in
   - Implement fixtures to be able to properly test without having to put manual data
 - [x] CI / CD with Github actions
 - [ ] Design (this will be later)
-- [ ] Export to CSV
+- [x] Export to CSV
 - [ ] A search bar if possible
 
 Alexandre TO

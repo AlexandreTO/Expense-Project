@@ -39,10 +39,9 @@
 					</tr>
 				{% endfor %}
 			</tbody>
-			<button class="btn btn-primary">Export to CSV</button>
+			<a href="{{ path('export_expenses_csv') }}" class="btn btn-primary">Export to CSV</a>
 		</table>
 	</div>
-
 {% endblock %}
 
 {% block javascripts %}

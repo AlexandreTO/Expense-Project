@@ -1,5 +1,3 @@
-// assets/js/app.js
-
 document.addEventListener('DOMContentLoaded', function() {
     const table = document.getElementById('table');
     const headers = table.querySelectorAll('th a.sortable');

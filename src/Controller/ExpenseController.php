@@ -64,4 +64,38 @@ class ExpenseController extends AbstractController
         ]);
     }
 
+    #[Route('/expenses/export/csv', name: 'export_expenses_csv')]
+    public function exportToCsv(): Response
+    {
+        $expenses = $this->em->getRepository(Expense::class)->findAll();
+        $csv = $this->generateCSV($expenses);
+
+        $response = new Response($csv);
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename="expenses.csv"');
+
+        return $response;
+    }
+
+    private function generateCSV(array $expenses): string
+    {
+        $handle = fopen('php://memory', 'wb');
+
+        // Headers
+        fputcsv($handle, ['Category', 'Amount', 'Date', 'Description']);
+        foreach ($expenses as $expense) {
+            fputcsv($handle, [
+                $expense->getCategory(),
+                $expense->getAmount(),
+                $expense->getDate()->format('Y-m-d'),
+                $expense->getDescription(),
+            ]);
+        }
+
+        rewind($handle);
+        $csv = stream_get_contents($handle);
+        fclose($handle);
+
+        return $csv;
+    }
 }
