@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
@@ -16,15 +17,19 @@ class Expense
     private ?int $id;
 
     #[ORM\Column(type: 'string', length: 100)]
-    #[Assert\NotBlank]
+    #[Groups(["default", "create", "update"])]
+    #[Assert\NotBlank(groups: ["default", "create"])]
     private ?string $category;
 
     #[ORM\Column(type: 'decimal', scale: 3)]
+    #[Groups(["default", "create", "update"])]
+    #[Assert\NotBlank(groups: ["default", "create"])]
     #[Assert\Positive]
     private ?float $amount;
 
     #[ORM\Column(type: 'date')]
-    #[Assert\NotBlank]
+    #[Groups(["default", "create", "update"])]
+    #[Assert\NotBlank(groups: ["default", "create"])]
     private ?\DateTimeInterface $date;
 
     #[ORM\Column(type: 'text', nullable: true)]
