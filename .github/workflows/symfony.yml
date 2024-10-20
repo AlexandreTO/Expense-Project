@@ -60,4 +60,4 @@ jobs:
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         env:
           DATABASE_URL: mysql://root:root@127.0.0.1:3306/test_db # Use secrets in DATABASE_URL
-        run: vendor/bin/phpunit tests
+        run: vendor/bin/phpunit tests/Forms

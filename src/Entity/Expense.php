@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,22 +13,22 @@ class Expense
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id;
 
     #[ORM\Column(type: 'string', length: 100)]
     #[Assert\NotBlank]
-    private $category;
+    private ?string $category;
 
     #[ORM\Column(type: 'decimal', scale: 3)]
     #[Assert\Positive]
-    private $amount;
+    private ?float $amount;
 
     #[ORM\Column(type: 'date')]
     #[Assert\NotBlank]
-    private $date;
+    private ?\DateTimeInterface $date;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    private $description;
+    private ?string $description;
 
     public function getId(): ?int
     {

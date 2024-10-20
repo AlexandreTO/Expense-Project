@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Expense;
@@ -11,6 +14,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ExpenseController extends AbstractController
 {
+    private EntityManagerInterface $em;
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
     #[Route('/expense/new', name: 'expense_new')]
     public function newExpense(Request $request, EntityManagerInterface $em): Response
     {
@@ -21,8 +31,8 @@ class ExpenseController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($expense);
-            $em->flush();
+            $this->em->persist($expense);
+            $this->em->flush();
 
             return $this->redirectToRoute('expense_list');
         }
@@ -38,7 +48,7 @@ class ExpenseController extends AbstractController
         $sortField = $request->query->get('sort', 'category');
         $sortDirection = $request->query->get('direction', 'asc');
 
-        $expenses = $em->getRepository(Expense::class)->findBy([], [$sortField => $sortDirection]);
+        $expenses = $this->em->getRepository(Expense::class)->findBy([], [$sortField => $sortDirection]);
 
         if ($request->isXmlHttpRequest()) {
             // Return only the table rows for AJAX requests
