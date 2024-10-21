@@ -19,6 +19,7 @@ final class Version20241021154456 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
+        $this->addSql('ALTER TABLE Expense DROP FOREIGN KEY FK_E287B43AA76ED395');
         $this->addSql('DROP TABLE IF EXISTS Expense');
         $this->addSql('DROP TABLE IF EXISTS Users');
         $this->addSql('CREATE TABLE Expense (id INT AUTO_INCREMENT NOT NULL, user_id INT NOT NULL, category VARCHAR(100) NOT NULL, amount NUMERIC(10, 3) NOT NULL, date DATETIME NOT NULL, description LONGTEXT DEFAULT NULL, INDEX IDX_E287B43AA76ED395 (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
