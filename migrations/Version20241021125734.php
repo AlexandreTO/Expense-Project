@@ -22,7 +22,7 @@ final class Version20241021125734 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE Expense ADD user_id INT NOT NULL');
         $this->addSql('ALTER TABLE Expense ADD CONSTRAINT FK_E287B43AA76ED395 FOREIGN KEY (user_id) REFERENCES Users (id)');
-        $this->addSql('CREATE INDEX IDX_E287B43AA76ED395 ON expense (user_id)');
+        $this->addSql('CREATE INDEX IDX_E287B43AA76ED395 ON Expense (user_id)');
     }
 
     public function down(Schema $schema): void
