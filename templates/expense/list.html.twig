@@ -26,20 +26,10 @@
 				</tr>
 			</thead>
 			<tbody>
-				{% for expense in expenses %}
-					<tr>
-						<td data-column="category">{{ expense.category }}</td>
-						<td data-column="amount">{{ expense.amount }}</td>
-						<td data-column="date">{{ expense.date|date('Y-m-d') }}</td>
-						<td data-column="description">{{ expense.description }}</td>
-					</tr>
-				{% else %}
-					<tr>
-						<td colspan="4">No expenses found</td>
-					</tr>
-				{% endfor %}
+				{% include 'expense/_table_rows.html.twig' %}
 			</tbody>
 			<a href="{{ path('export_expenses_csv') }}" class="btn btn-primary">Export to CSV</a>
+			<a href="{{ path('expense_new') }}" class="btn btn-primary">New expense</a>
 		</table>
 	</div>
 {% endblock %}
