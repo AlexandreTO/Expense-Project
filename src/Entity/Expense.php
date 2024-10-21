@@ -8,8 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity]
 #[ORM\Table(name: "Expense")]
+#[ORM\Entity(repositoryClass: 'App\Repository\ExpenseRepository')]
 class Expense
 {
     #[ORM\Id]
@@ -19,22 +19,28 @@ class Expense
 
     #[ORM\Column(type: 'string', length: 100)]
     #[Groups(["default", "create", "update"])]
-    #[Assert\NotBlank(groups: ["default", "create"])]
+    #[Assert\NotBlank(groups: ["default", "create", "update"])]
     private ?string $category;
 
     #[ORM\Column(type: 'decimal', scale: 3)]
     #[Groups(["default", "create", "update"])]
-    #[Assert\NotBlank(groups: ["default", "create"])]
+    #[Assert\NotBlank(groups: ["default", "create", "update"])]
     #[Assert\Positive]
     private ?float $amount;
 
-    #[ORM\Column(type: 'date')]
+    #[ORM\Column(type: 'datetime')]
     #[Groups(["default", "create", "update"])]
-    #[Assert\NotBlank(groups: ["default", "create"])]
+    #[Assert\NotBlank(groups: ["default", "create", "update"])]
     private ?\DateTimeInterface $date;
 
     #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(["default", "create", "update"])]
     private ?string $description;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'expenses')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["default", "create"])]
+    private ?User $user = null;
 
     public function getId(): ?int
     {
@@ -82,6 +88,17 @@ class Expense
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
         return $this;
     }
 }

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Expense;
+use App\Entity\User;
+use App\DTO\ExpenseDTO;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
@@ -44,8 +46,8 @@ class ExpenseApiController extends AbstractController
     #[OA\Tag(name: 'Expenses')]
     public function index(): JsonResponse
     {
-        $expenses = $this->em->getRepository(Expense::class)->findAll();
-        $data = $this->serializer->serialize($expenses, 'json');
+        $expenses = $this->em->getRepository(Expense::class)->findAllWithUsers();
+        $data = $this->serializer->serialize($expenses, 'json', ['groups' => ['default']]);
 
         return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
@@ -89,7 +91,7 @@ class ExpenseApiController extends AbstractController
             return $this->json(['message' => 'Expense not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $data = $this->serializer->serialize($expense, 'json');
+        $data = $this->serializer->serialize($expense, 'json', ['groups' => ['default']]);
         return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
 
@@ -100,32 +102,51 @@ class ExpenseApiController extends AbstractController
     )]
     #[OA\RequestBody(
         required: true,
-        content: new Model(type: Expense::class)
+        content: new OA\JsonContent(
+            type: 'object',
+            properties: [
+                new OA\Property(property: 'category', type: 'string', description: 'The category of the expense'),
+                new OA\Property(property: 'amount', type: 'number', format: 'float', description: 'The amount of the expense'),
+                new OA\Property(property: 'date', type: 'string', format: 'date-time', description: 'The date of the expense'),
+                new OA\Property(property: 'description', type: 'string', description: 'A description of the expense'),
+                new OA\Property(property: 'user_id', type: 'integer', description: 'The ID of the user associated with this expense'),
+            ],
+            required: ['category', 'amount', 'date', 'user_id']
+        )
+    )]
+    #[OA\Response(
+        response: 201,
+        description: 'Expense created',
+        content: new OA\JsonContent(
+            ref: new Model(type: Expense::class)
+        )
     )]
     #[OA\Response(
         response: 400,
         description: 'Validation errors',
-        content: new OA\MediaType(
-            mediaType: 'application/json',
-            schema: new OA\Schema(
-                type: 'object',
-                properties: [
-                    'errors' => new OA\Property(type: 'string'),
-                ]
-            )
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'errors', type: 'string', description: 'Validation error messages'),
+            ]
         )
     )]
-    #[OA\Tag(name: 'Expenses')]
     #[Security(name: 'Bearer')]
+    #[OA\Tag(name: 'Expenses')]
     public function create(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
+
+        $user = $this->em->getRepository(User::class)->find($data['user_id']);
+        if (!$user) {
+            return $this->json(['errors' => 'User not found'], Response::HTTP_BAD_REQUEST);
+        }
 
         $expense = new Expense();
         $expense->setCategory($data['category']);
         $expense->setAmount($data['amount']);
         $expense->setDate(new \DateTime($data['date']));
         $expense->setDescription($data['description']);
+        $expense->setUser($user);
 
         // Validate the expense entity
         $errors = $this->validator->validate($expense);
@@ -136,11 +157,12 @@ class ExpenseApiController extends AbstractController
         $this->em->persist($expense);
         $this->em->flush();
 
-        // Serialize the created expense
-        $jsonData = $this->serializer->serialize($expense, 'json');
+        // Serialize response
+        $jsonData = $this->serializer->serialize($expense, 'json', ['groups' => ['create']]);
 
         return new JsonResponse($jsonData, Response::HTTP_CREATED, [], true);
     }
+
 
     #[Route('/api/expenses/{id}', name: 'api_expense_update', methods: ['PUT'])]
     #[OA\Put(
@@ -210,6 +232,9 @@ class ExpenseApiController extends AbstractController
         if (array_key_exists('description', $data)) {
             $expense->setDescription($data['description']);
         }
+        if (array_key_exists('userId', $data)) {
+            return $this->json(['errors' => 'Changing the user is not allowed.'], Response::HTTP_BAD_REQUEST);
+        }
 
         $errors = $this->validator->validate($expense);
         if (count($errors) > 0) {
@@ -218,7 +243,7 @@ class ExpenseApiController extends AbstractController
 
         $this->em->flush();
 
-        $jsonData = $this->serializer->serialize($expense, 'json');
+        $jsonData = $this->serializer->serialize($expense, 'json', ['groups' => ['update']]);
 
         return new JsonResponse($jsonData, Response::HTTP_OK, [], true);
     }

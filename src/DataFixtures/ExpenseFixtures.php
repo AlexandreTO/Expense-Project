@@ -4,14 +4,14 @@ namespace App\DataFixtures;
 
 use App\Entity\Expense;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
-class ExpenseFixtures extends Fixture
+class ExpenseFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        // Initialize Faker for generating random data
         $faker = Factory::create();
 
         for ($i = 0; $i < 5; $i++) {
@@ -21,10 +21,21 @@ class ExpenseFixtures extends Fixture
             $expense->setDate($faker->dateTimeBetween('-1 year', 'now'));
             $expense->setDescription($faker->sentence);
 
+            // Assign a random user to each expense
+            $userRef = rand(0, 4);
+            $user = $this->getReference("user_$userRef");
+            $expense->setUser($user);
+
             $manager->persist($expense);
+
+            $this->addReference("expense_$i", $expense);
         }
 
-        // Flush all expenses to the database
         $manager->flush();
+    }
+
+    public function getDependencies(): array
+    {
+        return [UserFixtures::class];
     }
 }

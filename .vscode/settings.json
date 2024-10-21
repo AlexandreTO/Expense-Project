@@ -1,0 +1,19 @@
+{
+    "php.version": "8.3",
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MariaDB",
+            "name": "Projet",
+            "database": "expense",
+            "username": "alexandre",
+            "askForPassword": true
+        }
+    ]
+}
