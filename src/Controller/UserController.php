@@ -10,7 +10,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class UserController extends AbstractController
 {
@@ -22,7 +24,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/user/new', name: 'new_user')]
-    public function newUser(Request $request): Response
+    public function newUser(Request $request, UserPasswordHasherInterface $hasher): Response
     {
         $user = new User();
 
@@ -31,13 +33,36 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $hashedPassword = $hasher->hashPassword($user, $user->getPassword());
+            $user->setPassword($hashedPassword);
+
+            $user->setRoles(['ROLE_USER']);
+
             $this->em->persist($user);
             $this->em->flush();
-            return $this->redirectToRoute('expense_list');
+            return $this->redirectToRoute('login');
         }
 
         return $this->render('user/new.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/login', name: 'login')]
+    public function login(AuthenticationUtils $authUtils): Response
+    {
+        $error = $authUtils->getLastAuthenticationError();
+
+        $lastUsername = $authUtils->getLastUsername();
+
+        return $this->render('user/login.html.twig', [
+            'last_username' => $lastUsername,
+            'error' => $error,
+        ]);
+    }
+
+    #[Route('/logout', name: 'logout')]
+    public function logout(): void
+    {
     }
 }
