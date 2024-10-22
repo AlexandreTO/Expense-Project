@@ -22,7 +22,7 @@ class ExpenseController extends AbstractController
     }
 
     #[Route('/expense/new', name: 'expense_new')]
-    public function newExpense(Request $request, EntityManagerInterface $em): Response
+    public function newExpense(Request $request): Response
     {
         $expense = new Expense();
 
@@ -43,7 +43,7 @@ class ExpenseController extends AbstractController
     }
 
     #[Route('/expense/list', name: 'expense_list')]
-    public function listExpenses(Request $request, EntityManagerInterface $em): Response
+    public function listExpenses(Request $request): Response
     {
         $sortField = $request->query->get('sort', 'category');
         $sortDirection = $request->query->get('direction', 'asc');
