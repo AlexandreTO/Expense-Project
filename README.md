@@ -33,6 +33,7 @@ vendor/bin/phpunit #can add the folder or files to specify which tests to run in
   - Secure the access to the API
 - [x] Unit Testing
   - Need to integrate properly the API tests in the workflow
+  - Expand the tests and make them more robust
   - ~~Implement fixtures~~
 - [x] CI / CD with Github actions
 - [ ] Design (this will be later)

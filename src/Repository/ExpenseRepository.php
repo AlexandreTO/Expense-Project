@@ -17,7 +17,7 @@ class ExpenseRepository extends ServiceEntityRepository
     public function findUserById(int $userId, string $sortField, string $sortDirection): array
     {
         return $this->createQueryBuilder("e")
-            ->where("'e.user = :user")
+            ->where("e.user = :user")
             ->setParameter('user', $userId)
             ->orderBy('e.' . $sortField, $sortDirection)
             ->getQuery()
