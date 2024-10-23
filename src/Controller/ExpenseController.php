@@ -15,6 +15,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class ExpenseController extends AbstractController
 {
     private EntityManagerInterface $em;
+    private const ALLOWED_SORT_FIELDS = ['category', 'amount', 'date', 'description'];
+    private const ALLOWED_SORT_DIRECTIONS = ['asc', 'desc'];
 
     public function __construct(EntityManagerInterface $em)
     {
@@ -25,6 +27,14 @@ class ExpenseController extends AbstractController
     public function newExpense(Request $request): Response
     {
         $expense = new Expense();
+
+        $user = $this->getUser();
+
+        if (!$user) {
+            throw $this->createAccessDeniedException('You must be logged in to create an expense.');
+        }
+
+        $expense->setUser($user);
 
         $form = $this->createForm(ExpenseType::class, $expense);
 
@@ -45,10 +55,15 @@ class ExpenseController extends AbstractController
     #[Route('/expense/list', name: 'expense_list')]
     public function listExpenses(Request $request): Response
     {
+        $user = $this->getUser();
+
         $sortField = $request->query->get('sort', 'category');
         $sortDirection = $request->query->get('direction', 'asc');
 
-        $expenses = $this->em->getRepository(Expense::class)->findBy([], [$sortField => $sortDirection]);
+        $sortField = $this->getValidSortField($request->query->get('sort', 'category'));
+        $sortDirection = $this->getValidSortDirection($request->query->get('direction', 'asc'));
+
+        $expenses = $this->em->getRepository(Expense::class)->findUserById($user->getId(), $sortField, $sortDirection);
 
         if ($request->isXmlHttpRequest()) {
             // Return only the table rows for AJAX requests
@@ -97,5 +112,15 @@ class ExpenseController extends AbstractController
         fclose($handle);
 
         return $csv;
+    }
+
+    private function getValidSortField(string $sortField): string
+    {
+        return in_array($sortField, self::ALLOWED_SORT_FIELDS) ? $sortField : 'category';
+    }
+
+    private function getValidSortDirection(string $sortDirection): string
+    {
+        return in_array(strtolower($sortDirection), self::ALLOWED_SORT_DIRECTIONS) ? $sortDirection : 'asc';
     }
 }

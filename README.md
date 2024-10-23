@@ -24,7 +24,7 @@ vendor/bin/phpunit #can add the folder or files to specify which tests to run in
 
 - [x] Routing
 - [x] Database
-- [ ] Controller and Entity
+- [x] Controller and Entity
   - ~~Create User entity to link expenses~~
   - ~~Handle authentification in the front end~~
   - ~~Add User fixture after it~~
