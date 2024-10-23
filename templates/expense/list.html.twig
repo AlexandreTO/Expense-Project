@@ -1,4 +1,3 @@
-{# templates/expense/list.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Expense List
@@ -6,31 +5,39 @@
 
 {% block body %}
 	<div class="container">
-		<h1>List of Expenses</h1>
+		{% if app.user %}
+			<h1>List of Expenses</h1>
 
-		<table id="table" class="table">
-			<thead>
-				<tr>
-					<th>
-						<a href="#" class="sortable" data-sort="category">Category</a>
-					</th>
-					<th>
-						<a href="#" class="sortable" data-sort="amount">Amount</a>
-					</th>
-					<th>
-						<a href="#" class="sortable" data-sort="date">Date</a>
-					</th>
-					<th>
-						<a href="#" class="sortable" data-sort="description">Description</a>
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% include 'expense/_table_rows.html.twig' %}
-			</tbody>
+			<table id="table" class="table">
+				<thead>
+					<tr>
+						<th>
+							<a href="#" class="sortable" data-sort="category">Category</a>
+						</th>
+						<th>
+							<a href="#" class="sortable" data-sort="amount">Amount</a>
+						</th>
+						<th>
+							<a href="#" class="sortable" data-sort="date">Date</a>
+						</th>
+						<th>
+							<a href="#" class="sortable" data-sort="description">Description</a>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% include 'expense/_table_rows.html.twig' %}
+				</tbody>
+			</table>
+
 			<a href="{{ path('export_expenses_csv') }}" class="btn btn-primary">Export to CSV</a>
 			<a href="{{ path('expense_new') }}" class="btn btn-primary">New expense</a>
-		</table>
+			<a href="{{ path('logout')}}" class="btn btn-danger">Logout</a>
+		{% else %}
+			<h1>Access Denied</h1>
+			<p>You need to be logged in to view the expense list.</p>
+			<a href="{{ path('login') }}" class="btn btn-primary">Login</a>
+		{% endif %}
 	</div>
 {% endblock %}
 
