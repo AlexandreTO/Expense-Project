@@ -57,6 +57,10 @@ class ExpenseController extends AbstractController
     {
         $user = $this->getUser();
 
+        if (!$user) {
+            return $this->redirectToRoute('login');
+        }
+
         $sortField = $request->query->get('sort', 'category');
         $sortDirection = $request->query->get('direction', 'asc');
 
