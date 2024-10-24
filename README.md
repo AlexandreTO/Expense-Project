@@ -22,23 +22,16 @@ vendor/bin/phpunit #can add the folder or files to specify which tests to run in
 
 ### TODO
 
-- [x] Routing
-- [x] Database
-- [x] Controller and Entity
-  - ~~Create User entity to link expenses~~
-  - ~~Handle authentification in the front end~~
-  - ~~Add User fixture after it~~
 - [x] API
-  - ~~Make an interface for it instead of having to use cURL or Postman.~~
   - Secure the access to the API
 - [x] Unit Testing
   - Need to integrate properly the API tests in the workflow
   - Expand the tests and make them more robust
-  - ~~Implement fixtures~~
-- [x] CI / CD with Github actions
 - [ ] Design (this will be later)
   - Create a char when clicking a button?
 - [x] Export to CSV
+  - Improve the export
 - [ ] A search bar if possible
+- [ ] Add redis for caching purpose
 
 Alexandre TO
