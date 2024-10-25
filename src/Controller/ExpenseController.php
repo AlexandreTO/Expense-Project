@@ -34,14 +34,13 @@ class ExpenseController extends AbstractController
             throw $this->createAccessDeniedException('You must be logged in to create an expense.');
         }
 
-        $expense->setUser($user);
-
         $form = $this->createForm(ExpenseType::class, $expense);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($expense);
+            $expense->setUser($user);
             $this->em->flush();
 
             return $this->redirectToRoute('expense_list');
