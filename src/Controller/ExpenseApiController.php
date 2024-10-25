@@ -83,7 +83,7 @@ class ExpenseApiController extends AbstractController
     )]
     #[Security(name: 'Bearer')]
     #[OA\Tag(name: 'Expenses')]
-    public function show(int $id): JsonResponse
+    public function getOneExpenseById(int $id): JsonResponse
     {
         $expense = $this->em->getRepository(Expense::class)->find($id);
 

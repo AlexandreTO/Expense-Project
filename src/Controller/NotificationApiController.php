@@ -44,9 +44,52 @@ class NotificationApiController extends AbstractController
     #[OA\Tag(name: 'Notifications')]
     public function index(): JsonResponse
     {
-        $notifications = $this->em->getRepository(@Notification::class)->findAll();
+        $notifications = $this->em->getRepository(Notification::class)->findAll();
         $data = $this->serializer->serialize($notifications, 'json', ['groups' => ['default']]);
 
+        return new JsonResponse($data, Response::HTTP_OK, [], true);
+    }
+
+    #[Route('/api/notifications/{id}', name: 'api_notification_show', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/notifications/{id}',
+        summary: 'Returns a specific expense by ID'
+    )]
+    #[OA\Parameter(
+        name: 'id',
+        in: 'path',
+        required: true,
+        description: 'ID of the notification'
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Notification found',
+        content: new Model(type: Notification::class)
+    )]
+    #[OA\Response(
+        response: 404,
+        description: 'Notification not found',
+        content: new OA\MediaType(
+            mediaType: 'application/json',
+            schema: new OA\Schema(
+                type: 'object',
+                properties: [
+                    'errors' => new OA\Property(type: 'string'),
+                ]
+            )
+        )
+    )]
+    #[Security(name: 'Bearer')]
+    #[OA\Tag(name: 'Notifications')]
+    public function getOneNotificationById(int $id): JsonResponse
+    {
+        $notification = $this->em->getRepository(Notification::class)->find($id);
+
+        if (!$notification) {
+            return $this->json(['message' => 'Notification not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $data = $this->serializer->serialize($notification, 'json', ['groups' => ['default']]);
         return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
 }

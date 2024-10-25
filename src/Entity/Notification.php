@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Table(name: "Notification")]
+#[ORM\HasLifecycleCallbacks]
 class Notification
 {
     #[ORM\Id]
@@ -83,9 +84,9 @@ class Notification
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    #[ORM\PrePersist]
+    public function setCreatedAt(): void
     {
-        $this->createdAt = $createdAt;
-        return $this;
+        $this->createdAt = new \DateTimeImmutable();
     }
 }
