@@ -6,30 +6,32 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Table(name: "Notification")]
-#[ORM\Entity(repositoryClass: NotificationRepository::class)]
-#[ORM\HasLifecycleCallbacks]
 class Notification
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(["default", "create"])]
     private int $id;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'notifications')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["default", "create"])]
     private User $user;
 
     #[ORM\Column(type: 'string')]
+    #[Groups(["default", "create", "update"])]
     private string $message;
 
     #[ORM\Column(type: 'boolean')]
+    #[Groups(["default", "create", "update"])]
     private bool $isRead = false;
 
     #[ORM\Column(type: 'datetime')]
-    private \DateTimeInterface $createdAt;
+    #[Groups(["default", "create", "update"])]
+    private ?\DateTimeInterface $createdAt = null;
 
     public function __construct(User $user, string $message)
     {
@@ -81,9 +83,9 @@ class Notification
         return $this->createdAt;
     }
 
-    #[ORM\PrePersist]
-    public function setCreatedAtValue(): void
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = $createdAt;
+        return $this;
     }
 }

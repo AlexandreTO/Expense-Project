@@ -156,7 +156,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             if ($notification->getUser() === $this) {
                 $notification->setUser(null);
             }
-
         }
         return $this;
     }
