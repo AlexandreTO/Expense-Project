@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Expense;
+use App\Event\ExpenseAddEvent;
 use App\Form\ExpenseType;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,7 +26,7 @@ class ExpenseController extends AbstractController
     }
 
     #[Route('/expense/new', name: 'expense_new')]
-    public function newExpense(Request $request): Response
+    public function newExpense(Request $request, EventDispatcherInterface $eventDispatcher): Response
     {
         $expense = new Expense();
 
@@ -42,6 +44,8 @@ class ExpenseController extends AbstractController
             $this->em->persist($expense);
             $expense->setUser($user);
             $this->em->flush();
+
+            $eventDispatcher->dispatch(new ExpenseAddEvent($expense), ExpenseAddEvent::NAME);
 
             return $this->redirectToRoute('expense_list');
         }
