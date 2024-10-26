@@ -290,6 +290,6 @@ class ExpenseApiController extends AbstractController
         $this->em->remove($expense);
         $this->em->flush();
 
-        return $this->json(null, Response::HTTP_NO_CONTENT);
+        return $this->json(['message' => 'Expense deleted successfully'], Response::HTTP_NO_CONTENT);
     }
 }
