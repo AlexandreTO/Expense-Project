@@ -194,7 +194,7 @@ class UserApiController extends AbstractController
         )
     )]
     #[Security(name: 'Bearer')]
-    #[OA\Tag(name: 'USers')]
+    #[OA\Tag(name: 'Users')]
     public function update(Request $request, int $id): JsonResponse
     {
         $data = $this->em->getRepository(User::class)->find($id);
@@ -235,7 +235,7 @@ class UserApiController extends AbstractController
 
     #[Route('/api/user/{id}', name: 'api_user_delete', methods: ['DELETE'])]
     #[OA\Delete(
-        path: '/api/users/{id}',
+        path: '/api/user/{id}',
         summary: 'Deletes an user'
     )]
     #[OA\Parameter(

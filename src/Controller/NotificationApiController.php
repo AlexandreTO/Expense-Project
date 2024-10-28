@@ -227,7 +227,7 @@ class NotificationApiController extends AbstractController
 
     #[Route('/api/notification/{id}', name: 'api_notification_delete', methods: ['DELETE'])]
     #[OA\Delete(
-        path: '/api/notifications/{id}',
+        path: '/api/notification/{id}',
         summary: 'Deletes an notification'
     )]
     #[OA\Parameter(
