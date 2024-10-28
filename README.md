@@ -33,5 +33,6 @@ vendor/bin/phpunit #can add the folder or files to specify which tests to run in
   - Improve the export
 - [ ] A search bar if possible
 - [ ] Add redis for caching purpose
+- [ ] Use MongoDB
 
 Alexandre TO
