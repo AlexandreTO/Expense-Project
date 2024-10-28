@@ -54,7 +54,7 @@ class NotificationApiController extends AbstractController
     #[Route('/api/notifications/{id}', name: 'api_notification_show', methods: ['GET'])]
     #[OA\Get(
         path: '/api/notifications/{id}',
-        summary: 'Returns a specific expense by ID'
+        summary: 'Returns a specific notification by ID'
     )]
     #[OA\Parameter(
         name: 'id',
