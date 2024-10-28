@@ -113,7 +113,7 @@ class NotificationApiController extends AbstractController
     )]
     #[OA\Response(
         response: 201,
-        description: 'Expense created',
+        description: 'Notification created',
         content: new OA\JsonContent(
             ref: new Model(type: Notification::class)
         )
@@ -203,7 +203,7 @@ class NotificationApiController extends AbstractController
             return $this->json(['message' => 'Notification not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $this->serializer->deserialize($request->getContent(), Notification::class, 'json');
+        $this->serializer->deserialize($request->getContent(), Notification::class, 'json', ['object_to_populate' => $notification]);
 
         $errors = $this->validator->validate($notification);
         if (count($errors) > 0) {
