@@ -24,16 +24,15 @@ class UserTest extends WebTestCase
         $this->assertSelectorTextContains('h1', 'Create an account');
 
         $form = $userPage->selectButton('Register')->form();
-
         $form['user[username]'] = 'testuser';
         $form['user[password][first]'] = 'password123';
         $form['user[password][second]'] = 'password123';
 
         $client->submit($form);
-
         $client->followRedirect();
 
         $this->assertResponseIsSuccessful();
+
         // Fetch the user from the database after the creation from the test
         $user = self::getContainer()->get(EntityManagerInterface::class)->getRepository(User::class)->findOneBy(['username' => 'testuser']);
 
