@@ -31,9 +31,11 @@ class UserTypeTest extends TypeTestCase
         $form = $this->factory->create(UserType::class, new User());
         $form->submit($formData);
 
+        $submittedUser = $form->getData();
+
         $this->assertTrue($form->isSynchronized(), 'Form should be synchronized.');
-        $this->assertEquals($expectedUser->getUsername(), $form->getData()->getUsername());
-        $this->assertEquals($expectedUser->getRoles(), $form->getData()->getRoles());
+        $this->assertSame($expectedUser->getUsername(), $submittedUser->getUsername());
+        $this->assertSame($expectedUser->getRoles(), $submittedUser->getRoles());
 
         $view = $form->createView();
         $children = $view->children;
