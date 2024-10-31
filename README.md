@@ -31,7 +31,6 @@ vendor/bin/phpunit #can add the folder or files to specify which tests to run in
   - Create a char when clicking a button?
 - [x] Export to CSV
   - Improve the export
-- [ ] A search bar if possible
 - [ ] Add redis for caching purpose
 - [ ] Use MongoDB
 

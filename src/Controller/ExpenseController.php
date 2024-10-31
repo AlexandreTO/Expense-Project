@@ -13,16 +13,20 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Encoder\CsvEncoder;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class ExpenseController extends AbstractController
 {
     private EntityManagerInterface $em;
     private const ALLOWED_SORT_FIELDS = ['category', 'amount', 'date', 'description'];
     private const ALLOWED_SORT_DIRECTIONS = ['asc', 'desc'];
+    private SerializerInterface $serializer;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, SerializerInterface $serializer, )
     {
         $this->em = $em;
+        $this->serializer = $serializer;
     }
 
     #[Route('/expense/new', name: 'expense_new')]
@@ -42,7 +46,7 @@ class ExpenseController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($expense);
-            $expense->setUser($user);
+            $expense->setUser(user: $user);
             $this->em->flush();
 
             $eventDispatcher->dispatch(new ExpenseAddEvent($expense), ExpenseAddEvent::NAME);
@@ -70,7 +74,7 @@ class ExpenseController extends AbstractController
         $sortField = $this->getValidSortField($request->query->get('sort', 'category'));
         $sortDirection = $this->getValidSortDirection($request->query->get('direction', 'asc'));
 
-        $expenses = $this->em->getRepository(Expense::class)->findUserById($user->getId(), $sortField, $sortDirection);
+        $expenses = $this->em->getRepository(Expense::class)->findExpenseByUserIdSort($user->getId(), $sortField, $sortDirection);
 
         if ($request->isXmlHttpRequest()) {
             // Return only the table rows for AJAX requests
@@ -89,36 +93,23 @@ class ExpenseController extends AbstractController
     #[Route('/expenses/export/csv', name: 'export_expenses_csv')]
     public function exportToCsv(): Response
     {
-        $expenses = $this->em->getRepository(Expense::class)->findAll();
-        $csv = $this->generateCSV($expenses);
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('login');
+        }
+
+        $expenses = $this->em->getRepository(Expense::class)->findExpenseByUserId($user->getId());
+
+        $csv = $this->serializer->serialize($expenses, 'csv', [
+            CsvEncoder::HEADERS_KEY => ['Category', 'Amount', 'Date', 'Description']
+        ]);
 
         $response = new Response($csv);
+        // Set the headers
         $response->headers->set('Content-Type', 'text/csv');
         $response->headers->set('Content-Disposition', 'attachment; filename="expenses.csv"');
 
         return $response;
-    }
-
-    private function generateCSV(array $expenses): string
-    {
-        $handle = fopen('php://memory', 'wb');
-
-        // Headers
-        fputcsv($handle, ['Category', 'Amount', 'Date', 'Description']);
-        foreach ($expenses as $expense) {
-            fputcsv($handle, [
-                $expense->getCategory(),
-                $expense->getAmount(),
-                $expense->getDate()->format('Y-m-d'),
-                $expense->getDescription(),
-            ]);
-        }
-
-        rewind($handle);
-        $csv = stream_get_contents($handle);
-        fclose($handle);
-
-        return $csv;
     }
 
     private function getValidSortField(string $sortField): string
