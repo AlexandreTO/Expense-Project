@@ -54,9 +54,9 @@ class UserApiController extends AbstractController
         return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
 
-    #[Route('/api/users/{id}', name: 'user', methods: ['GET'])]
+    #[Route('/api/user/{id}', name: 'user', methods: ['GET'])]
     #[OA\Get(
-        path: '/api/users/{id}',
+        path: '/api/user/{id}',
         summary: 'Returns a specific user by ID'
     )]
     #[OA\Parameter(

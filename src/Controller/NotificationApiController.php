@@ -154,7 +154,7 @@ class NotificationApiController extends AbstractController
     #[Route('/api/notification/{id}', name: 'api_notification_update', methods: ['PUT'])]
     #[OA\Put(
         path: '/api/notification/{id}',
-        summary: 'Update an notification by its ID'
+        summary: 'Update a notification by its ID'
     )]
     #[OA\Parameter(
         name: 'id',
@@ -228,7 +228,7 @@ class NotificationApiController extends AbstractController
     #[Route('/api/notification/{id}', name: 'api_notification_delete', methods: ['DELETE'])]
     #[OA\Delete(
         path: '/api/notification/{id}',
-        summary: 'Deletes an notification'
+        summary: 'Deletes a notification'
     )]
     #[OA\Parameter(
         name: 'id',

@@ -19,6 +19,7 @@ final class Version20241018201605 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
+        // this down() migration is auto-generated, please modify it to your needs
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE TABLE Expense (id INT AUTO_INCREMENT NOT NULL, category VARCHAR(100) NOT NULL, amount NUMERIC(10, 3) NOT NULL, date DATE NOT NULL, description LONGTEXT DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
     }

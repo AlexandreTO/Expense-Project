@@ -46,7 +46,7 @@ class ExpenseApiController extends AbstractController
     #[OA\Tag(name: 'Expenses')]
     public function index(): JsonResponse
     {
-        $expenses = $this->em->getRepository(Expense::class)->findAllWithUsers();
+        $expenses = $this->em->getRepository(Expense::class)->findAll();
         $data = $this->serializer->serialize($expenses, 'json', ['groups' => ['default']]);
 
         return new JsonResponse($data, Response::HTTP_OK, [], true);

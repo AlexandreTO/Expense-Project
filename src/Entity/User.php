@@ -37,11 +37,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Expense::class, cascade: ['persist', 'remove'])]
-    #[Groups(["default", "update", "create"])]
     private Collection $expenses;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Notification::class, cascade: ['persist', 'remove'])]
-    #[Groups(["default", "update", "create"])]
     private Collection $notifications;
 
     public function __construct()

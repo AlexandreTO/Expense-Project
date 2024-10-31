@@ -7,6 +7,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+#[ORM\Entity]
 #[ORM\Table(name: "Notification")]
 #[ORM\HasLifecycleCallbacks]
 class Notification
@@ -20,7 +21,7 @@ class Notification
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'notifications')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(["default", "create"])]
-    private User $user;
+    private ?User $user;
 
     #[ORM\Column(type: 'string')]
     #[Groups(["default", "create", "update"])]
