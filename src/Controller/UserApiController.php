@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Attributes as OA;
@@ -25,13 +26,15 @@ class UserApiController extends AbstractController
     private SerializerInterface $serializer;
     private ValidatorInterface $validator;
     private UserPasswordHasherInterface $userPasswordHasher;
+    private JWTTokenManagerInterface $jwtTokenManager;
 
-    public function __construct(EntityManagerInterface $em, SerializerInterface $serializer, ValidatorInterface $validator, UserPasswordHasherInterface $userPasswordHasher)
+    public function __construct(EntityManagerInterface $em, SerializerInterface $serializer, ValidatorInterface $validator, UserPasswordHasherInterface $userPasswordHasher, JWTTokenManagerInterface $jwtTokenManager)
     {
         $this->em = $em;
         $this->serializer = $serializer;
         $this->validator = $validator;
         $this->userPasswordHasher = $userPasswordHasher;
+        $this->jwtTokenManager = $jwtTokenManager;
     }
 
     #[Route('/api/users', name: 'api_users_index', methods: ['GET'])]
@@ -95,6 +98,26 @@ class UserApiController extends AbstractController
 
         $data = $this->serializer->serialize($user, 'json', ['groups' => ['default']]);
         return new JsonResponse($data, Response::HTTP_OK, [], true);
+    }
+
+    #[Route('/api/login_check', name: 'api_login', methods: ['POST'])]
+    #[OA\Post(
+        path: '/api/login_check',
+        summary: 'Generate a JWT token for the user'
+    )]
+    #[Security(name: 'Bearer')]
+    #[OA\Tag(name: 'Users')]
+    public function loginCheck(Request $request): JsonResponse
+    {
+        $user = $this->getUser();
+
+        if (!$user) {
+            return new JsonResponse(['error' => 'Invalid credentials'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $token = $this->jwtTokenManager->create($user);
+
+        return new JsonResponse($token, Response::HTTP_OK, [], true);
     }
 
     #[Route('/api/users', name: 'api_user_create', methods: ['POST'])]
