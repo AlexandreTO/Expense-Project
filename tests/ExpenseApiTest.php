@@ -116,7 +116,6 @@ class ExpenseApiTest extends WebTestCase
 
     public function testDeleteExpense(): void
     {
-
         $userRepository = $this->entityManager->getRepository(User::class);
         $user = $userRepository->findOneBy([]);
 

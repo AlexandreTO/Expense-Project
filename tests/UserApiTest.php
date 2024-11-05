@@ -53,4 +53,12 @@ class UserApiTest extends WebTestCase
         $this->assertNotNull($user);
         $this->assertEquals($hashedPassword, $user->getPassword());
     }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        // Avoid memory leaks
+        $this->entityManager->close();
+        $this->entityManager = null;
+    }
 }
