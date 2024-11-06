@@ -22,15 +22,13 @@ vendor/bin/phpunit #can add the folder or files to specify which tests to run in
 
 ### TODO
 
+- [ ] **Docker**
 - [x] API
-  - ~~Secure the access to the API~~
 - [ ] Unit Testing
   - Need to integrate properly the API tests in the workflow
-  - Expand the tests and make them more robust
+  - Update the tests and make them more robust
 - [ ] Design (this will be later)
-  - Create a char when clicking a button?
 - [x] Export to CSV
 - [ ] Add redis for caching purpose
-- [ ] Use MongoDB
 
 Alexandre TO

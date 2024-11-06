@@ -6,7 +6,6 @@ namespace App\Controller;
 
 use App\Entity\Expense;
 use App\Entity\User;
-use App\DTO\ExpenseDTO;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
@@ -134,33 +133,24 @@ class ExpenseApiController extends AbstractController
     #[OA\Tag(name: 'Expenses')]
     public function create(Request $request): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
+        $data = $this->serializer->deserialize($request->getContent(), Expense::class, 'json');
 
         $user = $this->em->getRepository(User::class)->find($data['user_id']);
         if (!$user) {
             return $this->json(['errors' => 'User not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        $expense = new Expense();
-        $expense->setCategory($data['category']);
-        $expense->setAmount($data['amount']);
-        $expense->setDate(new \DateTime($data['date']));
-        $expense->setDescription($data['description']);
-        $expense->setUser($user);
-
         // Validate the expense entity
-        $errors = $this->validator->validate($expense);
+        $errors = $this->validator->validate($data);
         if (count($errors) > 0) {
             return $this->json(['errors' => (string) $errors], Response::HTTP_BAD_REQUEST);
         }
 
-        $this->em->persist($expense);
+        $this->em->persist($data);
         $this->em->flush();
 
-        // Serialize response
-        $jsonData = $this->serializer->serialize($expense, 'json', ['groups' => ['create']]);
 
-        return new JsonResponse($jsonData, Response::HTTP_CREATED, [], true);
+        return new JsonResponse($data, Response::HTTP_CREATED, [], true);
     }
 
 
