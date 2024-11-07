@@ -49,7 +49,7 @@ class ExpenseController extends AbstractController
             $expense->setUser(user: $user);
             $this->em->flush();
 
-            $eventDispatcher->dispatch(new ExpenseAddEvent($expense), ExpenseAddEvent::NAME);
+            $eventDispatcher->dispatch(new ExpenseAddEvent($expense), eventName: ExpenseAddEvent::NAME);
 
             return $this->redirectToRoute('expense_list');
         }

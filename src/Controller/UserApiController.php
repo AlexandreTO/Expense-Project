@@ -173,7 +173,6 @@ class UserApiController extends AbstractController
         return $this->json($data, Response::HTTP_CREATED);
     }
 
-
     #[Route('/api/user/{id}', name: 'api_user_update', methods: ['PUT'])]
     #[OA\Put(
         path: '/api/user/{id}',

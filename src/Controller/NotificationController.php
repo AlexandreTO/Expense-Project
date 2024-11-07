@@ -13,10 +13,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
 class NotificationController extends AbstractController
 {
-    public function listUnreadNotifications(EntityManagerInterface $em): Response
+    public function listNotifications(EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-        $notifications = $em->getRepository(Notification::class)->findBy(['user' => $user, 'isRead' => false]);
+        $notifications = $em->getRepository(Notification::class)->findBy(['user' => $user]);
 
         return $this->render('notifications/list.html.twig', [
             'notifications' => $notifications,
