@@ -1,6 +1,6 @@
 # Expense Project
 
-A small project for now. This is just an expense project that I am working on to hone / expand my skills. 
+A small project for now. This is just an expense project that I am working on to hone / expand my skills mainly on the backend side. 
 
 I will add more functionalities once I feel like the base is done and whenever I find a good implementation / idea for it.
 
@@ -27,7 +27,6 @@ vendor/bin/phpunit #can add the folder or files to specify which tests to run in
   - Need to integrate properly the API tests in the workflow
   - Update the tests and make them more robust
 - [ ] Design (this will be later)
-- [x] Export to CSV
 - [ ] Add redis for caching purpose
 
 Alexandre TO
