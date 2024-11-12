@@ -37,4 +37,5 @@ yarn-error.log
 
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
+/.vscode/
 ###< lexik/jwt-authentication-bundle ###
